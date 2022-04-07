@@ -71,7 +71,7 @@ actMap = maps.InjectActiveCells(mesh, actInd, np.nan)
 idenMap = maps.IdentityMap(nP=nC_act)
 
 ## Load gravity data
-gravData = pd.read_pickle('./groundGrav_Combined_zEllipsoid.pkl')
+gravData = pd.read_pickle('./groundGrav_Combined_zEllipsoid_Full.pkl')
 
 
 ## Create a Gravity Survey
