@@ -3,10 +3,12 @@
 This repository contains all of the files required to reproduce the SimPEG gravity inversions of the CLVF field dataset.
 
 
-Gravity dataset
+Gravity Dataset
 -----------------------------------------------------------------------------------------------------------
-File names: groundGrav_Combined_zEllipsoid_Full.pkl
-            groundGrav_Combined_zEllipsoid_Full.csv
+File names: 
+
+- **groundGrav_Combined_zEllipsoid_Full.pkl**
+- **groundGrav_Combined_zEllipsoid_Full.csv**
 
 For this study, a regional CLVF gravity dataset was compiled that includes 2,929 gravity stations. Measurements
 used in this study include the dataset collected by Langenheim et al. (2006), datasets from
@@ -21,21 +23,20 @@ regarding the standard USGS gravity reduction techniques used here can be found 
 Langenheim et al. (2007).
 
 The field dataset is provided in two different formats (.csv and .pkl). Both datafiles were created from a Pandas
-Dataframe with 12 data columns: Station_ID, lonWGS84, latWGS84, xWGS84_UTM10N, yWGS84_UTM10N, zWGS84, OG, FAA,
-SBA, TTC, CBA, and ISO.
+Dataframe with 12 data columns: 
 
-Station_ID: Name/ID assigned to the gravity station
-lonWGS84: Longitude of the gravity station (CRS: WGS84)
-latWGS84: Latitude of the gravity station (CRS: WGS84)
-xWGS84_UTM10N: Easting of the gravity station [m] (CRS: WGS84, Zone 10N)
-yWGS84_UTM10N: Northing of the gravity station [m] (CRS: WGS84, Zone 10N)
-zWGS84: Height of the gravity station above the WGS84 ellipsoid [m]
-OG: Original (raw) gravity meansurement [mGal]
-FAA: Free-Air anomaly [mGal]
-SBA: Simple Bouguer Anomaly [mGal]
-TTC: Total Terrian Correction [mGal]
-CBA: Complete Bouguer Anomaly [mGal]
-ISO: Residual isostatic gravity anomaly [mGal]
+ - **Station_ID**: Name/ID assigned to the gravity station
+ - **lonWGS84**: Longitude of the gravity station (CRS: WGS84)
+ - **latWGS84**: Latitude of the gravity station (CRS: WGS84)
+ - **xWGS84_UTM10N**: Easting of the gravity station [m] (CRS: WGS84, Zone 10N)
+ - **yWGS84_UTM10N**: Northing of the gravity station [m] (CRS: WGS84, Zone 10N)
+ - **zWGS84**: Height of the gravity station above the WGS84 ellipsoid [m]
+ - **OG**: Original (raw) gravity meansurement [mGal]
+ - **FAA**: Free-Air anomaly [mGal]
+ - **SBA**: Simple Bouguer Anomaly [mGal]
+ - **TTC**: Total Terrian Correction [mGal]
+ - **CBA**: Complete Bouguer Anomaly [mGal]
+ - **ISO**: Residual isostatic gravity anomaly [mGal]
 
 Gravity corrections were calculated using station locations based on the NAD27 CRS and the NVD29 vertical
 datum. Absoluted gravity measurements were calculated using the 1967 formula based on the IGSN71 datum. For
@@ -43,13 +44,13 @@ consistency with the SRTM DEM gravity station locations were transformed into la
 based on the WGS84 CRS and the WGS84 ellipsoid.
 
 
-
 Mesh File
 -----------------------------------------------------------------------------------------------------------
-File name: GroundGravCombined_InvMesh_BaseCell_200_200_50_50kmPad.msh
+File name: **GroundGravCombined_InvMesh_BaseCell_200_200_50_50kmPad.msh**
 
 OcTree mesh file saved in UBC-GIF format.
 
+```
 4096 4096 16384                         # Number of base cells in x, y, and z directions
 107357.3290 3887596.6230 410325.0000    # Top SW corner of the mesh [m]
 200.000 200.000 50.000                  # Base cell (smallest cell) size in x, y, and z directions [m]
@@ -58,12 +59,12 @@ OcTree mesh file saved in UBC-GIF format.
 2049 1 1 2048
 1 2049 1 2048
 2049 2049 1 2048
-
+```
 
 
 Active Cells File
 -----------------------------------------------------------------------------------------------------------
-File name: actCellTopoInd_200_200_50.npy
+File name: **actCellTopoInd_200_200_50.npy**
 
 (# Cells,) Numpy boolean array which is True if the cell is active (below the topographic surface) and False
 if the cell is inactive (air cell above topography).
@@ -72,7 +73,7 @@ if the cell is inactive (air cell above topography).
 
 Cell Weights File
 -----------------------------------------------------------------------------------------------------------
-File name: cellWeights_Depth.npy
+File name: **cellWeights_Depth.npy**
 
 (# Active Cells,) Numpy array containing a cell weights for each active cell in the octree mesh. These cell
 weights are based off a depth weighting which counteracts the natural ( 1/z^2) decay of the gravity kernel
@@ -82,7 +83,7 @@ function (Li and Oldenburg, 1998).
 
 Inversion Script
 -----------------------------------------------------------------------------------------------------------
-File name: Inv_PGI_grav_5units_depthWieght_TikhonovReg_dObsNeg.py
+File name: **Inv_PGI_grav_5units_depthWieght_TikhonovReg_dObsNeg.py**
 
 Python script to setup and run the field dataset 5 unit Petrophysically and Geologically Guided Inversion
 (PGI) See Astic and Oldenburg, (2019) for details.
@@ -91,14 +92,14 @@ Python script to setup and run the field dataset 5 unit Petrophysically and Geol
 
 Recovered Model File
 -----------------------------------------------------------------------------------------------------------
-File name: rhoInv_groundGravCombined_generalBounds_PGI5_depthWeight_dObsNeg.npy
+File name: **rhoInv_groundGravCombined_generalBounds_PGI5_depthWeight_dObsNeg.npy**
 
 (# Cells,) Numpy array containing the recovered density contrast model from the 5 unit PGI.
 
 
 Predictive Data File
 -----------------------------------------------------------------------------------------------------------
-File name: dPred_mInv_groundGravCombined_generalBounds_PGI5_depthWeight_dObsNeg.npy
+File name: **dPred_mInv_groundGravCombined_generalBounds_PGI5_depthWeight_dObsNeg.npy**
 
 (# Data,) Numpy array containing the predicted data from the recovered density contrast model. Data residuals
 can be calculated by subtracting these prediceted data from the observed data.
