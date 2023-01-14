@@ -1,6 +1,6 @@
 import sys
 
-# Define local path of SimPEG and Discretize packages on your system
+## Define local path of SimPEG and Discretize packages on your system
 sys.path.insert(0,'/user/bin/git/simpeg/discretize')
 import discretize
 print(discretize.__version__)
@@ -14,7 +14,7 @@ print(SimPEG.__path__)
 print(sys.path)
 
 
-# Import
+## Import required packages
 from discretize import TreeMesh, utils
 from discretize.utils import meshutils
 from discretize.utils import active_from_xyz
@@ -70,12 +70,13 @@ print(nC_act)
 actMap = maps.InjectActiveCells(mesh, actInd, np.nan)
 idenMap = maps.IdentityMap(nP=nC_act)
 
+
 ## Load gravity data
 gravData = pd.read_pickle('./groundGrav_Combined_zEllipsoid_Full.pkl')
 
 
 ## Create a Gravity Survey
-# Create array of xyz locations for gravity stations
+# Create array using xyz locations of gravity stations
 rxLoc = np.c_[gravData.xWGS84_UTM10N, gravData.yWGS84_UTM10N, gravData.zWGS84]
 
 # Create a list of receivers from station point locations
@@ -119,7 +120,7 @@ actCC = meshCC[actInd]
 CCbelow_Neg6000Ind = np.zeros_like(m0, dtype=bool)
 CCbelow_Neg6000Ind[np.where(actCC[:,2] < -6000)[0]] = True
 
-# Bounds for cells above z = -6000m
+# Bounds for cells above z=-6km
 lowerBound[~CCbelow_Neg6000Ind] = -0.25
 upperBound[~CCbelow_Neg6000Ind] = 0.2
 
@@ -129,7 +130,7 @@ print('lowerBoundCheck =', lowerBoundCheck)
 upperBoundCheck = np.all(m0[~CCbelow_Neg6000Ind] < upperBound[~CCbelow_Neg6000Ind])
 print('upperBoundCheck =', upperBoundCheck)
 
-# Bounds for cells below z = -6000m
+# Bounds for cells below z=-6km
 lowerBound[CCbelow_Neg6000Ind] = -0.5
 upperBound[CCbelow_Neg6000Ind] = 0.1
 
@@ -146,13 +147,14 @@ upperBoundCheck = np.all(m0 < upperBound)
 print('Full upperBoundCheck =', upperBoundCheck)
 
 
-##Define reference Gaussian Mixture Model (GMM) for PGI
+## Define reference Gaussian Mixture Model (GMM) for PGI
 gmmref = utils.WeightedGaussianMixture(
     n_components=5,  # units: Franciscan, Great Valley/Geysers Plutonic Complex, dense volcanics/greenstone, low density volcanics, melt
     mesh=mesh,  # inversion mesh
     actv=actInd,  # actv cells
     covariance_type="diag",  # diagonal covariances
 )
+
 # Initialization of gmm with fit
 # fake random samples, size of the mesh, number of physical properties: 2 (density and mag.susc)
 gmmref.fit(np.random.randn(nC_act).reshape(-1,1))
@@ -248,7 +250,6 @@ print('mean(check)=', np.mean(check))
 
 
 ## Create PGI regularization
-
 # Depth weighting
 # wr_Depth = SimPEG.utils.depth_weighting(mesh, reference_locs=topoXYZ, indActive=actInd, exponent=2.0, threshold=0.1)
 wr_Depth = np.load('./cellWeights_Depth.npy')
@@ -274,8 +275,19 @@ reg = utils.make_PGI_regularization(
     cell_weights_list=[wr_Depth],   # Cell weights (Depth weighting)
 )
 
-## Setup inverse problem with full petrophysical information
 
+## Create optimization to determine which numerical methods will be used to solve the inversion
+opt = optimization.ProjectedGNCG(
+    maxIter=50,         # Max number of inversion iterations
+    lower=lowerBound,   # Lower bound for density contrast
+    upper=upperBound,   # Upper bound for density contrast
+    maxIterLS=20,       # Max number of iterations for each line search
+    maxIterCG=100,      # Max number of CG solves per inexact Gauss-Newton iteration
+    tolCG=1e-4,         # Tolerance of CG solve
+)
+
+
+## Setup directives for the inverse problem
 # Ratio to use for each phys prop. smoothness in each direction;
 # roughly the ratio of the order of magnitude of each phys. prop.
 alpha0_ratio = np.r_[
@@ -305,18 +317,8 @@ update_smallness = directives.PGI_UpdateParameters(
 # Updat Jacobi pre-conditioner
 update_Jacobi = directives.UpdatePreconditioner()
 
-# Save model every iteration
+# Save the model every iteration
 save_model = directives.SaveModelEveryIteration()
-
-## Create optimization to determine which numerical methods will be used to solve the inversion
-opt = optimization.ProjectedGNCG(
-    maxIter=50,         # Max number of inversion iterations
-    lower=lowerBound,   # Lower bound for density contrast
-    upper=upperBound,   # Upper bound for density contrast
-    maxIterLS=20,       # Max number of iterations for each line search
-    maxIterCG=100,      # Max number of CG solves per inexact Gauss-Newton iteration
-    tolCG=1e-4,         # Tolerance of CG solve
-)
 
 
 ## Create inverse problem
@@ -333,22 +335,26 @@ inv = inversion.BaseInversion(
         MrefInSmooth,
         update_Jacobi,
         save_model
-    ],
+    ]
 )
+
 
 ## Run the inversion
 pgi_model = inv.run(m0)
 
-## Extract the results
+
+## Map active cells back to full domain
 density_model = actMap * pgi_model
 quasi_geology_model = actMap * reg.objfcts[0].membership(reg.objfcts[0].mref)
 final_petrophysical_misfit = reg.objfcts[0].objfcts[0](pgi_model, externalW=False)
+
 
 ## Save the results
 np.save('mInv_groundGravCombined_generalBounds_PGI5_depthWeight_dObsNeg.npy', pgi_model)
 np.save('rhoInv_groundGravCombined_generalBounds_PGI5_depthWeight_dObsNeg.npy', density_model)
 np.save('quasiGeologyMod_groundGravCombined_generalBounds_PGI5_depthWeight_dObsNeg.npy', quasi_geology_model)
 np.save('final_petrophysical_misfit_PGI5_depthWeight_dObsNeg.npy', final_petrophysical_misfit)
+
 
 ## Forward model predicted data from final model
 time0 = time.time()
@@ -357,7 +363,3 @@ time1 = time.time()
 print('FwdMod time:' + str(time1-time0))
 
 np.save('dPred_mInv_groundGravCombined_generalBounds_PGI5_depthWeight_dObsNeg.npy', dPred)
-
-
-
-
