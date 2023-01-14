@@ -58,7 +58,7 @@ mRef = 1e-8 * np.ones([mesh.nC,])
 print('mRef shape=', mRef.shape)
 
 ## Load starting model with Clear Lake Volcanics unit and well info
-m0_CLV600m_Wells_Full = np.load('../../../m0_CLV600m_Wells_Full.npy')
+m0_CLV600m_Wells_Full = np.load('./m0_CLV600m_Wells_Full.npy')
 print(m0_CLV600m_Wells_Full.shape)
 print('min(m0_CLV600m_Wells_Full)=', np.nanmin(m0_CLV600m_Wells_Full))
 print('max(m0_CLV600m_Wells_Full)=', np.nanmax(m0_CLV600m_Wells_Full))
@@ -113,12 +113,12 @@ dmis = data_misfit.L2DataMisfit(simulation=simulation, data=dataObj_ISO)
 
 
 ## Load lower and upper bound files which account for welllog info
-lowerBoundFull_wells = np.load('../../../lowerBoundFull_wells.npy')
+lowerBoundFull_wells = np.load('./lowerBoundFull_wells.npy')
 print(lowerBoundFull_wells.shape)
 print('min(lowerBoundFull_wells)=', np.nanmin(lowerBoundFull_wells))
 print('max(lowerBoundFull_wells)=', np.nanmax(lowerBoundFull_wells))
 
-upperBoundFull_wells = np.load('../../../upperBoundFull_wells.npy')
+upperBoundFull_wells = np.load('./upperBoundFull_wells.npy')
 print(upperBoundFull_wells.shape)
 print('min(upperBoundFull_wells)=', np.nanmin(upperBoundFull_wells))
 print('max(upperBoundFull_wells)=', np.nanmax(upperBoundFull_wells))

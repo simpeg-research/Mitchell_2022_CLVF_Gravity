@@ -81,28 +81,107 @@ function (Li and Oldenburg, 1998).
 
 
 
-Inversion Script
+Starting model (m0) File
 -----------------------------------------------------------------------------------------------------------
+File name: **m0_CLV600m_Wells_Full.npy**
+
+(# Cells,) Numpy array containing starting density contrast values for each cell in the octree mesh.
+
+For the 5-unit PGI, L1-norm, and L2-norm inversions a zero starting model was used. This starting model
+was used for the geologically constrained 5-unit PGI and contains an approximately 600 m-thick layer of
+Clear Lake Volcanics at the surface and density constrast information from 4 borehole logs.
+
+
+
+Cell Density Contrast Bound Files
+-----------------------------------------------------------------------------------------------------------
+File name: **lowerBoundFull_wells.npy**
+
+(# Cells,) Numpy array containing a lower density contrast bound for each cell in the octree mesh.
+
+
+File name: **upperBoundFull_wells.npy**
+
+(# Cells,) Numpy array containing a upper density contrast bound for each cell in the octree mesh.
+
+For the 5-unit PGI, L1-norm, and L2-norm inversions a these bounds are defined within the inversion scripts.
+These bound files were only used for the geologically constrained 5-unit PGI and reflect that addition of an
+approximately 600 m-thick layer of Clear Lake Volcanics at the surface and density constrast information
+from 4 borehole logs to the starting model.
+
+
+Inversion Scripts
+-----------------------------------------------------------------------------------------------------------
+File name: **Inv_GroundGrav_Combined_bounds_L2_depthWeight_dObsNeg.py**
+
+Python script to setup and run the field dataset L2-norm (smooth) inversion.
+
+
+File name: **Inv_GroundGrav_Combined_generalBounds_L1_DW_gradTotal.py**
+
+Python script to setup and run the field dataset L1-norm (sparse/blocky) inversion.
+
+
 File name: **Inv_PGI_grav_5units_depthWieght_TikhonovReg_dObsNeg.py**
 
-Python script to setup and run the field dataset 5 unit Petrophysically and Geologically Guided Inversion
+Python script to setup and run the field dataset 5-unit Petrophysically and Geologically Guided Inversion
 (PGI) See Astic and Oldenburg, (2019) for details.
 
 
+File name: **Inv_PGI_grav_5units_DW_dObsNeg_m0CLV_wells.py**
 
-Recovered Model File
+Python script to setup and run the field dataset 5-unit PGI with additional geologic and borehole constraints.
+
+
+
+Recovered Model Files
 -----------------------------------------------------------------------------------------------------------
+File name: **rhoInv_groundGrav_Combined_ISO_bounds_L2_depthWeight_dObsNeg.npy**
+
+(# Cells,) Numpy array containing the recovered density contrast model from the L2-norm inversion.
+
+
+File name: **rhoInv_groundGrav_Combined_ISO_generalBounds_L1_DW_gradTotal.npy**
+
+(# Cells,) Numpy array containing the recovered density contrast model from the L1-norm inversion.
+
+
 File name: **rhoInv_groundGravCombined_generalBounds_PGI5_depthWeight_dObsNeg.npy**
 
-(# Cells,) Numpy array containing the recovered density contrast model from the 5 unit PGI.
+(# Cells,) Numpy array containing the recovered density contrast model from the 5-unit PGI.
 
 
-Predictive Data File
+File name: **rhoInv_groundGravCombined_generalBounds_PGI5_depthWeight_dObsNeg.npy**
+
+(# Cells,) Numpy array containing the recovered density contrast model from the 5-unit PGI with additional
+geologic and borehole constraints.
+
+
+
+Predictive Data Files
 -----------------------------------------------------------------------------------------------------------
+File name: **dPred_groundGrav_Combined_ISO_bounds_L2_depthWeight_dObsNeg.npy**
+
+(# Data,) Numpy array containing the predicted data from the L2-norm inversion's recovered density contrast model.
+
+
+File name: **dPred_groundGrav_Combined_ISO_generalBounds_L1_DW_gradTotal.npy**
+
+(# Data,) Numpy array containing the predicted data from the L1-norm inversion's recovered density contrast model.
+
+
 File name: **dPred_mInv_groundGravCombined_generalBounds_PGI5_depthWeight_dObsNeg.npy**
 
-(# Data,) Numpy array containing the predicted data from the recovered density contrast model. Data residuals
-can be calculated by subtracting these prediceted data from the observed data.
+(# Data,) Numpy array containing the predicted data from the 5-unit PGI's recovered density contrast model.
+
+
+File name: **dPred_mInv_groundGravCombined_PGI5_DW_dObsNeg_m0CLV600m_wells.npy**
+
+(# Data,) Numpy array containing the predicted data from the geologically constrained 5-unit PGI's recovered
+density contrast model.
+
+Data residuals can be calculated by subtracting these prediceted data from the observed data.
+
 
 
 References:
